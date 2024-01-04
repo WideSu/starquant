@@ -14,63 +14,63 @@ Welcome to StarQuant
 
 
 
-**StarQuant**(中文名：易数交易系统)是一个轻量的、面向个人( 普通）用户的综合量化交易回测系统，目前主要用于期货期权程序化交易（CTP接口，在实盘测试中），也支持股票交易功能（中泰xtp，宽睿oes接口，待测试和完善）。
+**StarQuant** is a lightweight, comprehensive quantitative trading backtesting system for individual (ordinary) users. It is currently mainly used for futures and options programmed trading (CTP interface, in real market testing), and is also Supports stock trading functions (Zhongtai xtp, Kuanrui oes interface, to be tested and improved).
+
+Community-verified icon
 
 
 
 
-当前进展
-2022.10 更新回测版，见backtest 分支，支持了Pro版中回测的常用功能。
+Current Progress
+2022.10 The backtest version is updated, see the backtest branch, and supports common backtest functions in the Pro version.
 
-2020.12：完成1.0版本beta版本，在ctp实盘测试中：
+2020.12: Completed the beta version of version 1.0, in the ctp real disk test:
 
-1）对于流动性好，盘口大的品种非大笔交易下tick级回测与实盘的成交时间和价位一致；
+1) For varieties with good liquidity and large market openings, the transaction time and price of tick-level backtesting and actual trading under non-large transactions are consistent;
 
-2）无人工干预阿里云/腾讯云 7*24h连续工作，api柜台自动重连断开，行情自动记录，策略自动初始化、开始和停止；
-
-
-
-## 功能特色
-
-* 采用多进程和多线程模式，行情交易接口，策略执行，gui界面均为独立进程，支持多种进程通信模式，对于普通应用，可以采用消息队列，延迟在百微秒量级（实测在30-100微秒之间,吞吐量在10k/s左右，对期货足够），对于普通用户延迟足够低 ，对于股票L2逐笔数据的高吞吐和低延迟可以采用共享内存通信模式，实现10微秒级的低延迟，同时落地所有交易数据；
-* 支持实盘程序化交易，支持多个API接口（如期货的ctp穿透式, 易盛tap，股票的中泰xtp，宽睿oes），支持多个期货、证券公司账号同时登录， 多个策略组独立运行，可设置触发条件实现自动登录，登出，重置等，可以实现7*24小时工作;具有风险控制模块，可以设置流控、总量控制等参数;　支持本地条件单（止损），一键全撤，平仓等自定义指令类型；
-* 支持策略的实时动态管理（增加，删除，编辑参数，启动，停止，重新载入等，类似vnpy的ctastrategy 模块），可以管理多个策略进程；
-* 支持c++或python语言的策略回测和实盘交易，回测框架中的事件驱动模式是基于vnpy改写，支持动态重新加载策略，策略在回测和交易程序中形式一样，无需重写代码, 同时python策略的数据格式、函数形式与vnpy兼容，方便转换、迁移和测试；
-* 支持bar和tick不同时间尺度回测；具有lite和pro以及批量回测模式，其中lite模式是单标的模式，在批量模式下可以多进程同时批量回测不同策略不同合约，方便将不同策略组合查看综合收益，pro模式支持任意多个标的同时回测，正则表达式确定标的名称范围，批量模式下支持多进程同时回测，方便将标的分开来实现并行快速回测；
-* 回测结果可以查看总体指标（收益率，夏普率，最大回撤等），收益曲线，所有成交明细，每日明细，在k线上显示对应买卖点标记，显示tick数据，方便分析；可以筛选指定条件的成交，回测结果可以导出为csv和相应图片；支持自定义指标显示分析；
-* 支持回测参数优化筛选功能，可以多进程参数优化和遗传算法优化;
-* 支持实盘行情订阅和数据存储（tick,bar），消息队列通信模式下类似vnpy的data recorder, 单独进程模式，同时也具有vnpy的csv loader的功能，支持bar和tick数据导入；共享内存通信模式下内存数据直接异步保存在硬盘，有专门的导出查看脚本用于数据处理和分析；支持从多个数据源下载数据（RQData，Tushare，JoinQuant）；
-* 支持基于实盘行情数据的模拟交易（Paper brokerage，简单的撮合），方便实盘前的测试；
-* 采用Qt可视化界面作为前端，方便管理，监控和操作，相关监控信息均有记录，可以导出为csv文件；可以查看实时k线数据；可以查看合约基本信息；可以选择性显示/隐藏指定视图控件单元，调整视图布局；也支持命令行（cli,tui）形式监控；
-*  支持微信实时推送和接收信息（itchat 或Server酱等方式)
-*  Linux，windows跨平台支持；
+2) Alibaba Cloud/Tencent Cloud works continuously 7*24 hours without manual intervention, the API counter automatically reconnects and disconnects, the market price is automatically recorded, and the strategy is automatically initialized, started and stopped;
 
 
 
-## PRO版特点
-* 回测支持任意多个标的；支持不同策略组合的多进程并行批量回测；回测结果可以按指定条件筛选；
-* mongodb数据读入写入基于pymongo的批量模式，相对普通版速度提高2-10倍；
-* 回测支持数据读取游标模式，节省内存消耗，支持批量组合不同回测结果；
-* 回测支持设置保存，回测结果读取，以及脚本模式；
-* 回测支持分布式计算和优化;
-* 支持因子统计分析、相关分析，批量因子生成和回归分析，方便快速因子筛选；
-* 支持基于预测模型的向量化快速回测（日内和隔夜），测试集、训练集单独评估；
-* 支持自定义各种指标显示，包括订单流；
-* 支持tick级别标的组合价格（价差）分析和指标分析, 支持tick数据分析和指标显示
-* 实盘支持共享内存通信方式，延迟在10微秒级别，支持10万/秒的吞吐量；
+## Features
 
-注：目前开源的代码具备了从回测到实盘交易的所有基础功能，也展示了系统的原型和框架，方便在此基础上二次开发和定制，定制化的代码(pro版)目前开源了部分功能，部分功能暂未开源，后期如果star数量较多时（1k以上）可以考虑开源。
-## 系统架构
-
-系统主框架基于c++实现，采用c-s架构，回测具有事件驱动模式和向量化两种模式，采用模块化松耦合设计，服务端的行情，交易、数据记录为单独线程，服务端与gui界面、策略之间的进程通信采用消息队列方式（nanomsg）或共享内存（基于功夫易筋经），行情数据可以通过相关端口以消息形式转发到策略进程，策略下单操作也通过相关端口将指令转发到服务端，然后调用相关柜台api，行情api支持CTP，TAP等，数据可以记录到本地（csv文件或Mongodb数据库），策略可以采用python或c++实现。GUI是基于PyQt5，支持手动交易，策略交易，委托持仓账号等信息查看。
+* Using multi-process and multi-thread mode, the market trading interface, strategy execution, and GUI interface are all independent processes, supporting multiple process communication modes. For ordinary applications, message queues can be used, with delays in the order of hundreds of microseconds (actually measured at 30 -100 microseconds, the throughput is around 10k/s, which is enough for futures), and the delay is low enough for ordinary users. For high throughput and low latency of stock L2 tick-by-tick data, the shared memory communication mode can be used to achieve 10 microseconds. Class-low latency, all transaction data is logged at the same time;
+* Supports real offer programmed trading, supports multiple API interfaces (such as CTP penetration for futures, Yishengtap, Zhongtai XTP for stocks, Kuanrui OES), supports simultaneous login of multiple futures and securities company accounts, multiple The policy group operates independently, and can set trigger conditions to realize automatic login, logout, reset, etc., and can achieve 7*24 hours of work; it has a risk control module, which can set parameters such as flow control and total volume control; supports local condition orders (stop loss), one-click total withdrawal, position closing and other custom instruction types;
+* Supports real-time dynamic management of strategies (add, delete, edit parameters, start, stop, reload, etc., similar to vnpy's ctastrategy module), and can manage multiple strategy processes;
+* Supports real-time dynamic management of strategies (add, delete, edit parameters, start, stop, reload, etc., similar to vnpy's ctastrategy module), and can manage multiple strategy processes;
+* Supports bar and tick backtesting at different time scales; has lite, pro and batch backtesting modes. The lite mode is a single-bid mode. In batch mode, multiple processes can be used to backtest different strategies and contracts in batches at the same time, making it easy to combine different strategies. Check the comprehensive income. The pro mode supports simultaneous backtesting of any number of targets. Regular expressions determine the name range of the target. The batch mode supports simultaneous backtesting of multiple processes, making it easy to separate the targets to achieve parallel and fast backtesting;
+* The backtest results can view the overall indicators (yield, Sharpe rate, maximum retracement, etc.), yield curve, all transaction details, daily details, display corresponding buying and selling point marks on the K line, and display tick data for easy analysis; you can Filter transactions under specified conditions, and backtest results can be exported as csv and corresponding pictures; support custom indicator display and analysis;
+* Supports backtesting parameter optimization and screening functions, allowing multi-process parameter optimization and genetic algorithm optimization;
+* Supports real market quotation subscription and data storage (tick, bar), message queue communication mode is similar to vnpy's data recorder, separate process mode, and also has the function of vnpy's csv loader, supports bar and tick data import; shared memory communication In mode, the memory data is directly saved asynchronously on the hard disk, and there is a special export viewing script for data processing and analysis; it supports downloading data from multiple data sources (RQData, Tushare, JoinQuant);
+* Support simulated trading (Paper brokerage, simple matching) based on real offer market data to facilitate testing before real offer;
+* Use Qt visual interface as the front end to facilitate management, monitoring and operation. Relevant monitoring information is recorded and can be exported to csv files; real-time K-line data can be viewed; basic contract information can be viewed; specified view controls can be selectively displayed/hidden Unit, adjust view layout; also supports command line (cli, tui) form monitoring;
+* Support WeChat real-time push and receive information (itchat or Server sauce, etc.)
+*Linux, windows cross-platform support;
 
 
 
+## PRO version features
+* Backtesting supports any number of targets; supports multi-process parallel batch backtesting with different strategy combinations; backtesting results can be filtered according to specified conditions;
+*Mongodb data reading and writing is based on the batch mode of pymongo, which is 2-10 times faster than the normal version;
+* Backtesting supports data reading cursor mode to save memory consumption and supports batch combination of different backtesting results;
+* Backtesting supports setting saving, backtesting result reading, and script mode;
+* Backtesting supports distributed computing and optimization;
+* Supports factor statistical analysis, correlation analysis, batch factor generation and regression analysis to facilitate rapid factor screening;
+* Supports vectorized fast backtesting (intraday and overnight) based on the prediction model, and the test set and training set are evaluated separately;
+* Supports customized display of various indicators, including order flow;
+* Support tick-level target combination price (spread) analysis and indicator analysis, support tick data analysis and indicator display
+* The real disk supports shared memory communication, with a delay of 10 microseconds and a throughput of 100,000/second;
+
+Note: The current open source code has all basic functions from backtesting to real trading, and also shows the prototype and framework of the system to facilitate secondary development and customization on this basis. The customized code (pro version) is currently open source Some functions have been added, and some functions have not yet been open sourced. In the future, if the number of stars is large (more than 1k), open source can be considered.
+
+## system structure
+
+The main framework of the system is implemented based on C++ and adopts c-s architecture. Backtesting has two modes: event-driven mode and vectorization. It adopts modular loose coupling design. The market, transaction and data records on the server side are separate threads. The server side and GUI interface and strategy The process communication between them adopts message queue mode (nanomsg) or shared memory (based on Kung Fu Yi Jin Jing). Market data can be forwarded to the strategy process in the form of messages through relevant ports. The strategy order operation also forwards instructions to the service through relevant ports. terminal, and then call the relevant counter api. The market api supports CTP, TAP, etc. The data can be recorded locally (csv file or Mongodb database), and the strategy can be implemented in python or c++. The GUI is based on PyQt5 and supports manual trading, strategic trading, entrusted position account and other information viewing.
 
 
-## 开发环境
-本系统在开发过程中参考了已有的开源软件vnpy,kungfu等。
-主要开发环境：
+## Development environment
+During the development process of this system, we referred to the existing open source software vnpy, kungfu, etc.
+Main development environment:
 
 (1) Manjaro（arch，Linux内核4.14)，python 3.8，gcc 9
 
@@ -78,17 +78,17 @@ Welcome to StarQuant
 
 (3) Windows 10 ,vs2019
 
-第三方库：
-(1)需要系统安装:boost,libmongoc-1.0
+Third-party libraries:
+(1) System installation required: boost, libmongoc-1.0
 
-(2)需要系统安装或者自行编译cppsrc/ 下的 nanomsg 1.0, log4cplus 2.04,yaml-cpp,fmt5.3, ta-lib,
+(2) You need to install the system or compile nanomsg 1.0, log4cplus 2.04, yaml-cpp, fmt5.3, ta-lib under cppsrc/ by yourself.
 
-(3)python依赖psutil，pyyaml, pyqt, qdarkstyle等包，见backtest分支下的requirement.txt
+(3) python depends on psutil, pyyaml, pyqt, qdarkstyle and other packages, see requirement.txt under the backtest branch
 
-## 运行
+## Run
 
-首先需要编译完成cppsrc下的库，需要事先安装boost，nanomsg以及CTP,TAP等柜台api的动态链接库。
-编译过程和原项目类似，使用 [CMake](https://cmake.org) 进行编译：
+First, you need to compile the library under cppsrc, and install the dynamic link libraries of boost, nanomsg, CTP, TAP and other counter APIs in advance.
+The compilation process is similar to the original project. Use [CMake](https://cmake.org) to compile:
 
 ```
 $ cd cppsrc
@@ -97,41 +97,41 @@ $ cd build
 $ cmake ..
 $ make
 ```
-编译完成后将cppsrc/build/StarQuant下的可执行文件apiserver.exe拷贝到主目录运行即可启动服务端，
-gui界面执行gui.py即可启动，运行strategy.py可启动单独的策略进程，运行recorder.py可启动行情记录进程。
+After compilation is completed, copy the executable file apiserver.exe under cppsrc/build/StarQuant to the home directory and run it to start the server.
+The gui interface can be started by executing gui.py, running strategy.py can start a separate strategy process, and running recorder.py can start the market recording process.
 
-## 编写约定
+## Writing convention
 -------------------
-c++参考google 的c++ guide, cpplint检查；
+For c++, refer to Google’s c++ guide, cpplint check;
 
-python 采用flake8检查，autopep8格式化；
+python uses flake8 checking and autopep8 formatting;
 
-变量命名：类名采用驼峰式，单词首字母大写，不包含_字符；类成员变量字母一般小写，后加_，如data_,全局变量加g_修饰，函数一般大小写混合形式。
+Variable naming: Class names use camel case, with the first letter of the word capitalized and not containing the _ character; class member variable letters are generally lowercase, followed by _, such as data_, global variables are modified with g_, and functions are generally in mixed case.
 
 
 
-## 使用说明
+## Instructions for use
 -------
-品种符号约定：
-  采用全名的形式：交易所 类型 商品名 合约，如SHFE F RB 1905
-  对于ctp，程序内部api会转换为对应的简写形式，rb1905，
-行情、交易、策略之间消息传递的格式：消息头|消息内容
- 消息头:目的地|源地址|类型，类型有：
+Variety symbol convention:
+  Take the form of full name: exchange type commodity name contract, such as SHFE F RB 1905
+  For ctp, the program's internal API will be converted into the corresponding abbreviation form, rb1905,
+The format of message transmission between market, transaction and strategy: message header | message content
+ Message header: destination|source address|type, the types are:
 
- 消息内容：对应类型的数据
-
+ Message content: data of corresponding type
 
 ## Demo
------------
-![ ](demos/demopro.gif "回测演示1")
-![ ](demos/live3.png  "普通版实盘交易模式展示")
-![ ](demos/livepro.png  "定制版实盘交易展示")
-![ ](demos/btpro4.png  "定制版回测订单流分析展示")
-![ ](demos/btpro1.png  "批量回测")
-![ ](demos/btpro2.png  "回测结果筛选，k线、指标分析")
+----------
+![ ](demos/demopro.gif "Backtest Demo 1")
+![ ](demos/live3.png "Regular version of real trading mode display")
+![ ](demos/livepro.png "Customized version of real trading display")
+![ ](demos/btpro4.png "Customized version of backtest order flow analysis display")
+![ ](demos/btpro1.png "Batch backtest")
+![ ](demos/btpro2.png "Backtest result screening, K-line, indicator analysis")
+
 ## TODO
 
-本系统完成了版本1.0的beta版本，正在实盘测试中，同时在完善c++回测、向量化回测，cli界面。
+This system has completed the beta version of version 1.0 and is currently undergoing real-time testing. At the same time, the C++ backtest, vectorized backtest, and cli interface are being improved.
 
 
 
